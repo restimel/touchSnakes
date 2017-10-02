@@ -22,6 +22,36 @@
 		color: gray;
 		text-align: center;
 	}
+	.color0 {
+		color: hsl(0, 50%, 50%);
+	}
+	.color1 {
+		color: hsl(113, 50%, 50%);
+	}
+	.color2 {
+		color: hsl(226, 50%, 50%);
+	}
+	.color3 {
+		color: hsl(339, 50%, 50%);
+	}
+	.color4 {
+		color: hsl(72, 50%, 50%);
+	}
+	.color5 {
+		color: hsl(185, 50%, 50%);
+	}
+	.color6 {
+		color: hsl(298, 50%, 50%);
+	}
+	.color7 {
+		color: hsl(31, 50%, 50%);
+	}
+	.color8 {
+		color: hsl(144, 50%, 50%);
+	}
+	.color9 {
+		color: hsl(257, 50%, 50%);
+	}
 
 	#background {
 		z-index: 5;
@@ -284,6 +314,7 @@ startCountDown.timer = 0;
 startCountDown.counter = 5;
 
 function setStart() {
+	back.className = 'back';
 	ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 	startCountDown.clear();
 	comment.textContent = 'touch the screen';
@@ -303,6 +334,7 @@ function setBattle() {
 function setEnd(winner) {
 	currentMode = 2;
 	comment.textContent = 'The Winner is player ' + winner.identifier;
+	back.classList.add('color' + winner.identifier);
 	back.textContent = 'W';
 	setTimeout(() => {currentMode = 3; checkEnd();}, 3000);
 }

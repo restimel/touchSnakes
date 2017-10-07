@@ -363,6 +363,7 @@ function checkEnd() {
 	if (currentMode === 3) {
 		if (active.length === 0) {
 			setStart();
+			resize();
 		}
 	}
 }
@@ -461,11 +462,13 @@ canvas.ontouchstart = function(event) {
 }
 
 function resize() {
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	if (currentMode === 0) {
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	}
 }
 
-// window.onresize = resize;
+window.onresize = resize;
 resize();
 setStart();
 

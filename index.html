@@ -74,7 +74,7 @@
 
 const _2PI = 2 * Math.PI;
 const w = 5;
-const initCountDown = 5;
+const initCountDown = 3;
 
 const canvas = document.getElementById('canvas');
 const comment = document.getElementById('back-comment');
@@ -178,7 +178,7 @@ function drawPoint(identifier, coords = null) {
 }
 
 function drawSnake(identifier, active = 50) {
-	const isLived = active > 0 ? 50 : 100;
+	const isLived = active > 0 ? 50 : 30;
 	const color = `hsl(${(identifier*113)%380}, ${active}%, ${isLived}%)`;
 	const points = lastPoints[identifier] || [];
 
@@ -205,6 +205,13 @@ function drawSnake(identifier, active = 50) {
 	ctx.restore();
 }
 
+function getDistance(coord1, coord2) {
+	if (!coord1 || !coord2) {
+		return Infinity;
+	}
+	return Math.sqrt(Math.pow(coord1[0] - coord2[0], 2) + Math.pow(coord1[1] - coord2[1], 2));
+}
+
 function addDrawSnake(identifier, coords) {
 	const info = touchInfo[identifier];
 	const currentLength = info.currentLength;
@@ -216,9 +223,9 @@ function addDrawSnake(identifier, coords) {
 	let distance = 0;
 
 	if (lastCoords !== coords) {
-		distance = Math.sqrt((coords[0] - lastCoords[0]) ** 2 + (coords[1] - lastCoords[1]) ** 2);
+		distance = getDistance(coords, lastCoords);
 
-		if (distance < 3 * w) {
+		if (distance < 3 * w || !Number.isFinite(distance)) {
 			return;
 		}
 
@@ -230,7 +237,7 @@ function addDrawSnake(identifier, coords) {
 		}
 	}
 
-	info.live = 50;
+	info.life = 50;
 	clearTimeout(info.timer);
 	info.timer = setTimeout(inactive, 1000, info.identifier);
 
@@ -261,7 +268,7 @@ function addDrawSnake(identifier, coords) {
 
 	if (lastCoords !== coords) {
 
-		info.distance += Math.sqrt((coords[0] - lastCoords[0]) ** 2 + (coords[1] - lastCoords[1]) ** 2);
+		info.distance += distance;
 		
 		if (info.distance > 1000) {
 			info.distance -= 1000;
@@ -371,6 +378,9 @@ function checkEnd() {
 function inactive(identifier, repeat = true) {
 	const info = touchInfo[identifier];
 
+	if (!info) {
+		return;
+	} else
 	if (info.isActive) {
 		if (currentMode === 0) {
 			info.isActive = false;
@@ -430,6 +440,7 @@ canvas.ontouchend = function(event) {
 canvas.ontouchstart = function(event) {
 	const touch = event.changedTouches[0];
 	const identifier = touch.identifier;
+	const position = [touch.clientX, touch.clientY];
 
 	if (!touchInfo[identifier]) {
 		touchInfo[identifier] = {
@@ -445,10 +456,29 @@ canvas.ontouchstart = function(event) {
 		lastSegments[identifier] = [];
 	}
 
-	//Todo find the best
-	id[identifier] = identifier;
+	// find the best snake
+	if (currentMode === 0) {
+		id[identifier] = identifier;
+	} else {
+		let touchId = [-1, 50];
+		touchInfo.forEach((info, i) => {
+			if (info.isActive) {
+				let d = getDistance(position, lastPoints[info.identifier][0]);
+				if (d < touchId[1]) {
+					touchId = [i, d];
+				}
+			}
+		});
 
-	const info = touchInfo[identifier];
+		if (touchId[0] !== -1) {
+			id[identifier] = touchId[0];
+		} else {
+			id[identifier] = -1;
+			return false;
+		}
+	}
+
+	const info = touchInfo[id[identifier]];
 
 	clearTimeout(info.timer);
 	info.life = 50;
@@ -456,8 +486,10 @@ canvas.ontouchstart = function(event) {
 
 	if (currentMode === 0) {
 		info.isActive = true;
-		drawPoint(info.identifier, [touch.clientX, touch.clientY]);
+		drawPoint(info.identifier, position);
 		checkEnd();
+	} else {
+		addDrawSnake(info.identifier, position);
 	}
 }
 

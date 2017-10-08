@@ -9,7 +9,7 @@ _(it won't work on classic desktop, as you need a touch device)_
 
 ### How to play
 
-Touch the screen. You must be several players (limitation depends of your device).
+Touch the screen. Several players play on the same screen (limitation depends of your device).
 
 Then move your finger to move your snake. It grows longer depending of the distance you have run.
 
@@ -25,4 +25,4 @@ This game has been made only with vanilla JavaScript (with ES6 features). It use
 
 ## Improvement
 
-It is a one day game. So there must be lot of cool stuff to add. I will probably add somes but if you want to contribute feels free to do it and send me your great work!
+It is a one day game. So there must be lot of cool stuff to add. I will probably add somes but if you want to contribute feel free to do it and send me your great work!

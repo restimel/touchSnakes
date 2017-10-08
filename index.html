@@ -22,6 +22,11 @@
 		color: gray;
 		text-align: center;
 	}
+	.compatibility {
+		color: red;
+		position: absolute;
+		z-index: 50;
+	}
 	.color0 {
 		color: hsl(0, 50%, 50%);
 	}
@@ -66,6 +71,7 @@
 </head>
 <body>
 <canvas id="canvas"></canvas>
+<div class="compatibility">I am sorry.<br>There is an issue with your device.</div>
 <div id="background" class="back"></div>
 <div id="back-comment" class="back"></div>
 
@@ -159,7 +165,7 @@ function drawPoint(identifier, coords = null) {
 	const color = `hsl(${(identifier*113)%380}, 50%, 50%)`;
 
 	ctx.save();
-	ctx.globalCompositeOperation = "destination-out";
+	ctx.globalCompositeOperation = 'destination-out';
 	ctx.beginPath();
 	ctx.ellipse(...lostC, w*16, w*16, 0, 0, _2PI);
 	ctx.fill();
@@ -251,7 +257,7 @@ function addDrawSnake(identifier, coords) {
 		const lastC = points[points.length -1];
 		lastSegments[identifier].pop();
 
-		ctx.globalCompositeOperation = "destination-out";
+		ctx.globalCompositeOperation = 'destination-out';
 
 		ctx.beginPath();
 		ctx.ellipse(...lostC, w, w, 0, 0, _2PI);
@@ -504,8 +510,10 @@ window.onresize = resize;
 resize();
 setStart();
 
+document.querySelector('.compatibility').textContent = '';
+
 window.onerror = function(event) {
-	comment.innerHTMl += '<hr>'+event.message +'<hr>';
+	comment.innerHTML += '<hr>'+event.message +'<hr>';
 }
 </script>
 </body>
